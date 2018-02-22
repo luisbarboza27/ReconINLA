@@ -1,10 +1,10 @@
 \documentclass[11pt]{amsart}
 \usepackage{amsmath,amsfonts,amssymb,amsthm,verbatim,multirow,url,subfig,footnote,graphicx,array,xr,booktabs,placeins,float}
 \usepackage[usenames,dvipsnames]{color}
-\usepackage[style=numeric,
-doi=false,
-isbn=false,
-url=false]{biblatex}
+%  \usepackage[style=numeric,
+%  doi=false,
+%  isbn=false,
+%  url=false]{biblatex}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
@@ -26,14 +26,14 @@ url=false]{biblatex}
 \newcommand{\fv}[1]{\color{ForestGreen}\textbf{[FV: #1]}\normalcolor}
 \newcommand{\lb}[1]{\color{MidnightBlue}\textbf{[LB: #1]}\normalcolor}
 
-\addbibresource{biblioteca.bib}
+%\addbibresource{biblioteca.bib}
 
 \begin{document}
-\title[Paleoclimate Reconstruction using INLA.]{Paleoclimate
-  Reconstruction and Forecasting of the Northern Hemisphere Temperature using INLA algorithm.}
+\title[Paleoclimate Reconstruction using INLA.]{Efficient Reconstructions of Common Era Climate via Integrated Nested Laplace Approximations.}
 
 \author{Luis A. Barboza}
-\address{Centro de Investigacion en Matematica Pura y Aplicada (CIMPA), Universidad de Costa Rica\\
+\address{Centro de Investigacion en Matematica Pura y Aplicada (CIMPA)-Escuela
+  de Matematica, Universidad de Costa Rica\\
 San Jos\'e, Costa Rica}
 \email{luisalberto.barboza@ucr.ac.cr}
 
@@ -45,12 +45,16 @@ San Jos\'e, Costa Rica}
 }
 \email{julieneg@usc.edu}
 
+\author{Wan He}
+
 \author{Bo Li}
 \address{Department of Statistics \\
   University of Illinois at Urbana-Champaign \\
   Champaign, Illinois, USA.
 }
 \email{libo@illinois.edu}
+
+
 
 \date{\today}
 %\date{December 20, 2014}
@@ -144,20 +148,20 @@ $\tilde p(\theta_i|y)$ are obtained as follows:
 \subsection{Proxy data.}
 The PAGES2k global multiproxy database is a ``community-driven effort to
 synthesize all publicly-archived, temperature-sensitive proxy records of the
-past 2,000 years'' (see \cite{Kaufman2014} and \cite{PAGES2KConsortium2013}). The main objective of this database is
+past 2,000 years'' (see \cite{Kaufman2014}, \cite{PAGES2KConsortium2013} and \cite{PAGES2kConsortium2017}). The main objective of this database is
 to create a free information conglomerate that integrates temperature proxies
 with different level of resolution, in order to develop climatic
 reconstructions.
 
 The dataset is composed by a collection of borehole, coral, documentary, glacier
 ice, lake and marine 
-sediment, sclerosponge, speleothem and tree-ring data; collected at 692
-locations around the world. Each of those proxies
+sediment, sclerosponge, speleothem and tree-ring data; collected through 688
+data series around the world. Each of those proxies
 has different time horizons and this creates difficulties in the aggregation of
 information in simpler variables.  In order to select proxies with high
-predictive power, we chose those series with large correlation with respect to
+predictive power, we first chose those series with large correlation with respect to
 their closest spatial temperature record using the HadCRUT4.2 dataset. More
-details on this ``screening'' procedure can be found in \cite{Emile-Geay2015}. Finally we get 264 proxies
+details on this ``screening'' procedure can be found in \cite{Emile-Geay2015}. Finally we get 257 proxies
 that pass the previous procedure (see Figure \ref{fig:proxy} with the spatial
 distribution of the final proxies).   
 \begin{figure}
@@ -166,16 +170,18 @@ distribution of the final proxies).
   \caption{Pages2k proxy distribution.}
   \label{fig:proxy}
 \end{figure}
-It is also important to note that proxies have different temporal horizons, for example in Figure \ref{fig:histofirstyear} we have a histogram with the first year with information available for each one of them. Unlike previous studies (for example \cite{Barboza2014}), in this article we try to take into account the information available in most proxies, despite their temporal diversity.
+As mentioned, proxies have different temporal horizons, for example in Figure
+\ref{fig:histofirstyear} we have a histogram of the starting year when
+information is available for each proxy. Unlike previous studies (for example \cite{Barboza2014}), in this article we try to take into account the information available in most proxies, despite their temporal diversity.
 \begin{figure}
   \centering
-  \includegraphics[scale=0.25]{histo_mintemps}
+  \includegraphics[scale=0.3]{hist_FY}
   \caption{First year available for each proxy.}
   \label{fig:histofirstyear}
 \end{figure}
 
 \subsection{Temperature data.}
-We used the HadCRUT4 temperature dataset provided by the Met Office Hadley
+We used the HadCRUT4 global temperature dataset provided by the Met Office Hadley
 Centre and the Climatic Research Unit at the University of East Anglia, UK (version 4.4.0.0). The
 data consists of historical information of temperature anomalies relative to the
 period 1961-1990 in degrees Celsius, on an annual basis and calculated as
@@ -189,25 +195,30 @@ The forcing data consists of (see Figure \ref{fig:forcings} in the Appendix):
   resolution, taken from Coupled Model Intercomparison Project (CMIP6) (see
   \cite{Meinshausen2016}).
   
-\item Volcanic forcing from Easy Volcanic Aerosol (EVA) dataset (evolv2k) (see
+\item Volcanic forcing from Easy Volcanic Aerosol (EVA) dataset (evolv2k): (see
   \cite{Toohey2016}) reconstructed zonal mean AOD (mid-visible, i.e., 550 nm), covering the
   500 BCE to 1900 CE time period. For 1900 (or 1850) to present, \cite{Thomason2016} is
   used to fill in the forcing table, the volcanic data at varying locations is
   weighted by cosine of their corresponding latitudes.
   
-\item The solar forcing data in the table is computed from from SATIRE-H
-  (Holocene) at \cite{Vieira2011}. Irradiance from SATIRE-H (Holocene) is recorded on a decadal basis from 9495BC - 1939AD and daily from 1940AD onwards. Hence, the data prior to 1939AD is interpolated in a splined manner and after 1940AD, a annual mean is computed. For consistence of resolution of the data, annual data from 1640AD to 2000AD is also spline interpolated.
+\item The solar forcing data is computed from SATIRE-H
+  (Holocene) at \cite{Vieira2011}. Irradiance from SATIRE-H (Holocene) is
+  recorded on a decadal basis from 9495BC - 1939AD and then on a daily basis
+  from 1940AD onwards. Hence, the data prior to 1939AD was interpolated using splines and after 1940AD, an annual mean is computed. For consistence of resolution of the data, annual data from 1640AD to 2000AD is also spline interpolated.
 \end{itemize}
-
+\textbf{Julien: Can you please include more details on this section?}
 \section{Hierarchical Bayesian Model.}
 \label{sec:model}
 
 \subsection{Reduced Proxy.}
 \label{sec:rp}
 Following \cite{Barboza2014}, we reduce the dimension of the proxy dataset
-through the notion of a Reduced Proxy ($RP$). Due to the diversity of start
+through the notion of a Reduced Proxy ($RP$). First of all, we centered and
+scaled the proxy variables. Then we remove proxy series whose proportion of lost
+annual 
+observations is larger than 5\%. Due to the diversity of start
 dates in the proxies database (see Figure \ref{fig:histofirstyear}), we divide
-proxies into non-homogeneous groups where each group has dates of origin in an
+proxies into non-homogeneous groups where each group has dates of origin within an
 interval of 250 years. As the reconstruction is taking place over a 2000 year
 horizon, this creates 8 groups with the distribution shown in Table \ref{tab:distdate}.
 \begin{table}
@@ -216,42 +227,76 @@ horizon, this creates 8 groups with the distribution shown in Table \ref{tab:dis
     \toprule
     Group & Interval (year AD) & Number \\
     \midrule
-    1 & 1-250 & 21 \\
-    2 & 251-500 & 28 \\
-    3 & 501-750 & 32 \\
-    4 & 751-1000 & 37 \\
-    5 & 1001-1250 & 62 \\
-    6 & 1251-1500 & 76 \\
-    7 & 1501-1750 & 127 \\
-    8 & 1751-2000 & 211 \\
+    1 & 1-250 & 19 \\
+    2 & 251-500 & 25 \\
+    3 & 501-750 & 29 \\
+    4 & 751-1000 & 33 \\
+    5 & 1001-1250 & 54 \\
+    6 & 1251-1500 & 65 \\
+    7 & 1501-1750 & 105 \\
+    8 & 1751-2000 & 146 \\
     \bottomrule
   \end{tabular}
   \caption{Distribution of proxies according to date of origin.}
   \label{tab:distdate}
 \end{table}
-An important aspect that we can notice from the distribution in the previous table is that in the last two intervals the number of proxies is greater than the number of available observations. This creates dimensionality problems in the use of classical linear models. Therefore we decided to use two different methodologies to try to solve the previous problem:
+Two important aspects that we can notice from the distribution of Table
+\ref{tab:distdate} are: (1) in the last two intervals the number of proxies is greater than
+the number of available observations in the calibration period defined as
+1916-2000CE (85 observations) and (2) the number of proxies is very close to the
+number of available observations, which can cause overfitting issues or
+dimensionality problems in the use of classical linear models. Due to the above
+reasons we adjusted a multiple linear regression model between the anomalies
+observed and the proxies chosen in groups 1 to 5 as covariates, all during the calibration
+period. For the rest of the groups we used four different popular reduction
+techniques with the aim of adjusting a linear model between the same two
+variables over the same period: 
 \begin{description}
-\item[Lasso Regression]
-The Lasso regression penalizes the usual sum of squares with an argument
-containing the sum of the absolute values of each coefficient in the classical
-linear regression model, multiplied by an additional parameter (see \cite{Tibshirani1996}). Due
-to the geometric nature of the term of penalization, the search of estimators
-tends to assign values very close to zero to variables that have almost null
-effects with respect to the dependent variable. In this case, the Lasso
-regression was fitted using the temperature anomalies observed between 1900 and
-2000 (we will refer to this period as the calibration period) as the dependent
-variable and the corresponding standardized proxies in each of the groups defined in Table \ref{tab:distdate}.
-\item[Principal Component Regression]
+\item[Lasso Regression (LR)]
+We used a 10-fold Lasso regression where the smoothing parameter was selected
+through a cross validation criteria (see \cite{Tibshirani1996} and \cite{Friedman2010} for more details). % In this case, the Lasso
+% regression was fitted using the temperature anomalies observed within the
+% calibration period as the dependent
+% variable and the corresponding standardized proxies in each of the groups
+% defined in Table \ref{tab:distdate} as covariates.
+  
+% The Lasso regression penalizes the usual sum of squares with an argument
+% containing the sum of the absolute values of each coefficient in the classical
+% linear regression model, multiplied by an additional parameter (see \cite{Tibshirani1996}). Due
+% to the geometric nature of the term of penalization, the search of estimators
+% tends to assign values very close to zero to variables that have almost null
+% effects with respect to the dependent variable. In this case, the Lasso
+% regression was fitted using the temperature anomalies observed within the
+% calibration period as the dependent
+% variable and the corresponding standardized proxies in each of the groups
+% defined in Table \ref{tab:distdate} as covariates. 
+\item[Sparse Partial Least Squares (sPLS)] 
+  This method has the advantage to include sparseness in the partial least squares
+  estimators, in order to avoid inconsistency problems when there are a
+  considerable number of noisy covariates (see \cite{Chun2010} and \cite{Chung2013}). The
+  thresholding parameter is found using a 10-fold cross-validation criteria.    
+\item[Sliced Inverse Regression (SIR) with CSS selection method]
+  This procedure allows us to select reduced models which are similar to the
+  complete model in terms of the linear correlation among SIR-QZ indices (see
+  \cite{Coudret2014} and \cite{Coudret2017}). In general, the SIR methods (\cite{Li1991},
+  \cite{Duan1991}, \cite{Zhong2005}, \cite{Li2008}, \cite{Coudret2014}, \cite{Weisberg2002} among
+  others) reduce the dimension excess in non-parametric problems through the
+  estimation of the linear space spanned by the coefficients of the covariables.
+  In our case, we opt to use 8 slices and 4,6 and 2 EDR directions to approximate the linear
+  subspace of the 6th, 7th and 8th set of proxies. Finally we studied the association between proxies and temperatures
+  through a linear regression among the corresponding directions and the anomalies observed
+  during the calibration period. 
+\item[Principal Component Regression (PCR)]
 We computed the first 5 principal components on each set of proxies and we fitted a
 regression model between the temperature in the calibration period and the PCs
 as covariates. This type of methodology has been frequently criticized (see
 \cite{Jolliffe1982} and \cite{Tibshirani1996}),
-but we consider this as a temporal exercise before we substitute it with other
-techniques with more statistical support, for example \cite{Tibshirani1996},
-\cite{Duan1991} and \cite{Li1991} among others. 
+but we consider it as a benchmark for the first three methods. 
 \end{description}
-The eight reduced proxies for each methodology are shown in Figures
-\ref{fig:proxieslasso} and \ref{fig:proxiespcr} in the Appendix.
+Finally, we computed the reduced proxies by predicting the anomalies in the
+reconstruction period under any of the above methods and any of the groups in
+Table \ref{tab:distdate}. The eight reduced proxies for each methodology are
+shown in Figure \ref{fig:RPs} in the Appendix.
 
 \subsection{Model Specification}
 \label{sec:model}
@@ -270,7 +315,7 @@ some notation, assuming that all the variables are set at time $t$.
 \item $\tilde V_t = \log (-V_t+1)$. Transformed volcanic forcing. More details
   on the choice of the transformation in \cite{Barboza2014}.
   
-\item $B_t^{k,\tau}$. $k$-th B-Spline basis function at time $t$ with breakpoint
+\item $B_t^{k,\tau}$. $k$-th B-Spline basis function at time $t$ with knot
   sequence $\tau$ (more details in \cite{DeBoor2001} and \cite{Ramsay2005}). We assume that the
   B-Spline basis is composed by cubic polynomials.  
 \end{itemize}
@@ -289,15 +334,15 @@ for each available $RP$:
 \end{align}
 where $\{\alpha^i_j\}$ and $\{\beta_\ell\}$ are random parameters for
 $i=1,\ldots,N$, $j=0,1$ and $\ell=0,1,2,3$. The number of reduced proxies is
-$N\geq 1$. For simplicity, we are considering that the error terms
-$\epsilon^i_t$ and $\eta_t$ are
+$N\geq 1$. For simplicity, the error terms
+$\epsilon^i_t$ and $\eta_t$ are assumed to be
 independent normally-distributed random variables with finite variances
 $\{\sigma^2_{\epsilon^i}\}$ and $\sigma^2_{\eta}$ respectively. These variances
-are also considered as random.   
+are also considered as random and do not depend on time $t$.   
 \item[State-Space model without forcings (Model 2)]
-  We define the following model whose main reason is to prove the central hypothesis of this article, that is, that
+  We define the following model to evaluate the central hypothesis of this article, that is, the
 paleoclimate reconstruction can be performed without taking into account the
-external forcings at all, as long as they are replaced with deterministic
+external forcings, as long as they are replaced with deterministic
 functions that allow to describe the mean behavior of the series of anomalies.
 \begin{align}\label{eq:model2}
   \begin{cases}
@@ -316,18 +361,14 @@ structures are more complex.
 \section{Results.}
 \label{sec:results}
 
-\subsection{Reconstruction.}
-\label{sec:reconst}
-
 The models proposed in equations \eqref{eq:model1} and \eqref{eq:model2} were
 implemented using the R package \textbf{r-inla}\footnote{www.r-inla.org}. The
 implementation was based on the recommendations of \cite{Ruiz-Cardenas2012} and
 \cite{Muff2015} on the use of the INLA methodology in state-space models,
 dynamic linear models and, in general, measurement error models. These
-recommendations strongly use INLA's ability to copy latent processes in an
-identical way between different levels of the hierarchical models (see \cite{Martins2013}), allowing
+recommendations together with \cite{Martins2013} allow
 great flexibility when we work with bayesian models with several levels of
-information.
+information, in particular in the case of levels of hierarchical models.
 
 Like any hierarchical bayesian model, the most basic level of information
 corresponds to the level of prior information. This is defined through the
@@ -344,95 +385,124 @@ following hypothesis:
   small precision).
 \end{itemize}
 
-The models we specified in equations \eqref{eq:model1} and \eqref{eq:model2} can
-be combined with the two possible reduced-proxy constructions in section
-\ref{sec:rp}. In this way we will compare the following scenarios:
-\begin{description}
-\item[Scenario 1] Model 1 with $RP$ constructed using Lasso Regression.
-  
-\item[Scenario 2] Model 1 with $RP$ constructed using Principal Component
-  Regression.
-  
-\item[Scenario 3] Model 2 with $RP$ constructed using Lasso Regression, with
-  $\tau=\{250 k, k=1,\ldots,7\}$, i.e. $K(\tau)=11$.
-
-\item[Scenario 4] Same as Scenario 3 but using Principal Component Regression.
-
-\item[Scenario 5] Model 2 with $RP$ constructed using Lasso Regression, with
-  $\tau=\{100 k, k=1,\ldots,19\}$, i.e. $K(\tau)=23$.
-
-\item[Scenario 6] Same as Scenario 5 but using Principal Component Regression.
-
-\item[Scenario 7] Model 2 with $RP$ constructed using Lasso Regression, with
-  $\tau=\{50 k, k=1,\ldots,39\}$, i.e. $K(\tau)=43$.
-
-\item[Scenario 8] Same as Scenario 8 but using Principal Component Regression.
-\end{description}
-For comparison purposes, we will use two different measures that will allow us
-to measure the predictive capacity on each of previous scenarios. In this way we
-can select a model capable of making forecasts with a high confidence level. The
-two measures are the commonly used Mean Squared Error (MSE) and the Interval
-Score (IS) (see \cite{Gneiting2007a} for a detailed explanation of its technical
-advantages).
-
-Table \ref{tab:comparison} contains the MSE and IS for each of the six
-scenarios. Note that the scenarios with smallest measures correspond to
-scenarios 1 and 3. Clearly the construction of the reduced proxy using lasso
-regression allows to obtain better measures in all the cases. It is also
-important to add that it is quite difficult to select the best between scenarios
-1 and 3, since both have very similar metrics, but since scenario 1 has two out
-of three measures with some advantage, we present the results of this case in
-the main document, and those of scenario 3 in the appendix.
+As a first exercise, we analyze the change in the predictive capacity of the
+reconstruction model when more equations involving proxies are included. We used
+two scoring rules in \cite{Gneiting2007a} as measures of predictive ability:
+IS$_\alpha$ (Interval Score at $\alpha$ level) and CRPS (Continuous Ranked
+Probability Score). These scores have been previously employed in the
+verification of point forecasts in environmental sciences for example, as well as the area
+of paleoclimatic reconstructions (see \cite{Barboza2014} and
+\cite{Scheuerer2014}). Table \ref{tab:comparison1} contains the predictive
+measures using the observed anomalies and INLA's prediction intervals over the
+testing period 1914-2000. We compared in this case Model 1 with a single RP
+(the longest available) with respect to model 1 using the 8 available reduced
+proxies, where the latter are calculated under the four dimension reduction
+methods explained above.
 \begin{table}
   \centering
-  \begin{tabular}{c|ccc}
+  \begin{tabular}{c|rrr}
     \toprule
-    \textbf{Scenario} & MSE & IS$_{80}$ & IS$_{95}$ \\
+    Number of RPs-Method& IS$_{80}$ & IS$_{95}$ & CRPS \\ 
     \midrule
-    1 & 0.035 & 0.207 & 0.071 \\
-    2 & 0.073 & 0.242 & 0.091 \\
-    3 & 0.049 & 0.199 & 0.076\\
-    4 & 0.098 & 0.442 & 0.184\\
-    5 & 0.057 & 0.365 & 0.154\\
-    6 & 0.133 & 0.768 & 0.444\\
-    7 & 0.063 & 0.525 & 0.296 \\
-    8 & 0.172 & 1.078 & 0.777\\
+    1 RP & 0.5249 & 0.1988 & 0.2278 \\ 
+    8 RPs-PCR & 0.1622 & 0.0542 & 0.0702 \\ 
+    8 RPs-LASSO & 0.2465 & 0.1180 & 0.0864 \\ 
+    8 RPs-SPLS & 0.1755 & 0.0586 & 0.0687 \\ 
+    8 RPs-SIR & 0.2439 & 0.1144 & 0.0891 \\ 
     \bottomrule
-  \end{tabular}
-  \caption{Comparison measures: MSE and IS at 80\% and 95\% confidence level.}
-  \label{tab:comparison}
+\end{tabular}
+  \caption{Comparison of predictive measures in Model 1.}
+  \label{tab:comparison1}
 \end{table}
+It is evident that there is a substantial improvement
+in all the measures when we use all the available reduced proxies under any
+method. Also note that, among the models with external forcings, the techniques that
+guarantees better results in terms of prediction are PCR and SPLS.
 
-First note that the reconstructions of the temperature anomalies are shown in
-Figure \ref{fig:paleoCE1} and Figure \ref{fig:paleoCE3} in the appendix.
+We are also interested in verifying whether a linear combination of B-splines
+models the average behavior of the anomalies without the inclusion of external
+forcings at all. It is clear from equation \eqref{eq:model2} that one of the
+drawbacks of Model 2 is the arbitrariness of $K(\tau)$. Therefore, for each of
+the methods in section 4.1, the IS and CRPS measures were calculated for a fixed
+value of $K(\tau)$ over a grid defined in [1,50]. After this, the best $K(\tau)$
+for each method was selected using the IS and CRPS measures. These results are
+shown in Table 3. Due to the results of Table \ref{tab:comparison1}, we opt to
+use all the reduced proxies in this case.
+\begin{table}
+  \centering
+  \begin{tabular}{c|rrr}
+  \toprule
+Method  & IS$_{80}$ & IS$_{95}$ & CRPS \\ 
+  \midrule
+PCR & 0.1583 & 0.0532 & 0.0435 \\ 
+  LASSO & 0.1881 & 0.0640 & 0.0697 \\ 
+  SPLS & 0.1819 & 0.0611 & 0.0574 \\ 
+  SIR & 0.1649 & 0.0550 & 0.0462 \\ 
+   \bottomrule
+\end{tabular}
+  \caption{Comparison of predictive measures of Model 2.}
+  \label{tab:comparison2}
+\end{table}
+Note that PCR method attains a better performance in terms of all the three
+predictive measures than the
+rest of the methods, even though SIR differs very little in its corresponding
+measures. 
+
+Based on the above, we consider that Model 2's reconstructions based on PCR and SIR
+with $K(\tau)$ = 29 and $K(\tau)$ = 24 respectively represent the best results
+especially for the CRPS measure. Due to the criticism in the PCR methodology
+(see \cite{Jolliffe1982} and \cite{Tibshirani1996}), we point out the convenience of using SIR as the best methodology for
+Model 2. However, the graphical results between both cases are very similar as
+can be seen in the following figures. First note that the reconstructions of the
+temperature anomalies in the Common Era are shown in
+Figure \ref{fig:paleoCE1} and Figure \ref{fig:paleoCE3} in the appendix. Both
+show a similar behavior, in terms of trend and dispersion. The same can be said
+for a closer look of the reconstructions during the period 1900-2000 (see
+figures \ref{fig:paleo19001} and \ref{fig:paleo19003}). For comparison purposes,
+we also include the reconstructions of scenario 8 RPs-PCR in Model 1 (see
+figures \ref{fig:paleoCE4} and \ref{fig:paleo19004} in the appendix), where the
+main difference corresponds to the period 1-250 in terms of the variance of the
+mean function, mainly due to the sensitivity of the B-Spline basis to
+discrepancies among reduced proxies in a fixed time period.  
 \begin{figure}
   \centering
-  \includegraphics[scale=0.4]{RecCE_S1}
+  \includegraphics[scale=0.4]{RecCE_SIR_Splines}
   \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
-    prediction bands. Scenario 1.}
+    prediction bands. SIR Method - Model 2.}
   \label{fig:paleoCE1}
 \end{figure}
-The reconstruction of scenario 1 has less dispersion in each year where the
-latent variable was estimated. This is easy to verify by comparing Figures
-\ref{fig:paleo19001} and \ref{fig:paleo19003}. Despite the above it is very
-interesting that both reconstructions have a similar mean behavior, even though
-the reconstruction in scenario 3 does not consider external forcings at all.  
 
 \begin{figure}
   \centering
-  \includegraphics[scale=0.4]{Rec1900_S1}
+  \includegraphics[scale=0.4]{Rec1900_SIR_Splines}
   \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
-    prediction bands. Scenario 1.}
+    prediction bands. SIR Method - Model 2.}
   \label{fig:paleo19001}
 \end{figure}
-\subsection{Forecast.}
-\label{sec:forec}
 
-
+Finally, we also compare the nature of the linear function that determines the
+mean behavior of the state equation in both models. As the coefficients that
+accompany the covariates are random (External forcings for Model 1, B-Splines
+for Model 2) then it is possible to calculate confidence bands for the mean
+function in both cases. This is illustrated in Figure \ref{fig:meanfunction}.
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{MeanFunction_comp}
+  \caption{Mean function of the state equation and its 95\% confidence band.}
+  \label{fig:meanfunction}
+\end{figure}
+Note that the variance and the stability of the mean function are much greater
+in the best case of Model 2 than in the best case of Model 1. This could be an
+indicator that Model 1 has a greater bias in its mean behavior, which is a
+negative aspect in the reconstruction as a whole.
 \section{Conclusions.}
 \label{sec:conclusions}
 
-\printbibliography
+%\printbibliography
+
+\bibliographystyle{plain}
+\bibliography{biblioteca}
+
 
 \newpage
 \appendix
@@ -440,38 +510,55 @@ the reconstruction in scenario 3 does not consider external forcings at all.
 \section{Additional Plots}
 \begin{figure}[H]
   \centering
- \includegraphics[scale=0.4]{PAGES_composites_LASSO} 
-  \caption{Reduced Proxies using Lasso regression.}
-  \label{fig:proxieslasso}
+ \includegraphics[scale=0.4]{RPs_type} 
+  \caption{Reduced Proxies.}
+  \label{fig:RPs}
 \end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.4]{PAGES_composites_PCR5} 
+%   \caption{Reduced Proxies using PC regression.}
+%   \label{fig:proxiespcr}
+% \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{PAGES_composites_PCR5} 
-  \caption{Reduced Proxies using PC regression.}
-  \label{fig:proxiespcr}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.4]{forcings}
+  \includegraphics[scale=0.35]{forcings}
   \caption{Climate Forcings in the Common Era (1-2000 AD)}
   \label{fig:forcings}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{RecCE_S3}
+  \includegraphics[scale=0.35]{RecCE_PCR_Splines}
   \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
-    prediction bands. Scenario 3.}
+    prediction bands. PCR Method - Model 2.}
   \label{fig:paleoCE3}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{Rec1900_S3}
+  \includegraphics[scale=0.4]{Rec1900_PCR_Splines}
   \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
-    prediction bands. Scenario 3.}
+    prediction bands. PCR Method - Model 2.}
   \label{fig:paleo19003}
 \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{RecCE_PCR_Forcings}
+  \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
+    prediction bands. 8 RPs-PCR Method - Model 1.}
+  \label{fig:paleoCE4}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{Rec1900_PCR_Forcings}
+  \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
+    prediction bands. 8 RPs-PCR Method - Model 1.}
+  \label{fig:paleo19004}
+\end{figure}
+
 \end{document}

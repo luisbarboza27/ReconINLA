@@ -71,8 +71,7 @@ Instead of using the MCMC approach to solve for the latent variable, we used the
 INLA algorithm that shows a similar approximation than previous studies. The use
 of external forcings was tested by replace them with a fixed number of
 BSplines in the latent equation. Classical goodness-of-fit measures show that there is not a significant
-difference between the predictive ability of both approaches. We also employed
-the models to forecast the temperature anomalies during the period 2001-2014.
+difference between the predictive ability of both approaches. 
 \end{abstract}
 
 \section{Introduction.}
@@ -162,23 +161,18 @@ information in simpler variables.  In order to select proxies with high
 predictive power, we first chose those series with large correlation with respect to
 their closest spatial temperature record using the HadCRUT4.2 dataset. More
 details on this ``screening'' procedure can be found in \cite{Emile-Geay2015}. Finally we get 257 proxies
-that pass the previous procedure (see Figure \ref{fig:proxy} with the spatial
+that pass the previous procedure (see the first panel of Figure \ref{fig:proxy} with the spatial
 distribution of the final proxies).   
 \begin{figure}
   \centering
-  \includegraphics[scale=0.35]{proxy_dist}
-  \caption{Pages2k proxy distribution.}
+  \includegraphics[scale=0.45]{CombinedMap_Area}
+  \caption{Pages2k proxy distribution and temporal availability of proxies by
+    type, after the screening procedure of \cite{Emile-Geay2015}.}
   \label{fig:proxy}
 \end{figure}
-As mentioned, proxies have different temporal horizons, for example in Figure
-\ref{fig:histofirstyear} we have a histogram of the starting year when
-information is available for each proxy. Unlike previous studies (for example \cite{Barboza2014}), in this article we try to take into account the information available in most proxies, despite their temporal diversity.
-\begin{figure}
-  \centering
-  \includegraphics[scale=0.3]{hist_FY}
-  \caption{First year available for each proxy.}
-  \label{fig:histofirstyear}
-\end{figure}
+As mentioned, proxies have different temporal horizons, as it can be shown in the
+second panel of Figure~\ref{fig:proxy}. Unlike previous studies (for example \cite{Barboza2014}), in this article we try to take into account the information available in most proxies, despite their temporal diversity.
+
 
 \subsection{Temperature data.}
 We used the HadCRUT4 global temperature dataset provided by the Met Office Hadley
@@ -217,7 +211,7 @@ through the notion of a Reduced Proxy ($RP$). First of all, we centered and
 scaled the proxy variables. Then we remove proxy series whose proportion of lost
 annual 
 observations is larger than 5\%. Due to the diversity of start
-dates in the proxies database (see Figure \ref{fig:histofirstyear}), we divide
+dates in the proxies database (see Figure \ref{fig:proxy}), we divide
 proxies into non-homogeneous groups where each group has dates of origin within an
 interval of 250 years. As the reconstruction is taking place over a 2000 year
 horizon, this creates 8 groups with the distribution shown in Table \ref{tab:distdate}.
@@ -249,8 +243,7 @@ dimensionality problems in the use of classical linear models. Due to the above
 reasons we adjusted a multiple linear regression model between the anomalies
 observed and the proxies chosen in groups 1 to 5 as covariates, all during the calibration
 period. For the rest of the groups we used four different popular reduction
-techniques with the aim of adjusting a linear model between the same two
-variables over the same period: 
+techniques with the aim of adjusting a linear model between the same variables over the same period: 
 \begin{description}
 \item[Lasso Regression (LR)]
 We used a 10-fold Lasso regression where the smoothing parameter was selected
@@ -259,13 +252,14 @@ through a cross validation criteria (see \cite{Tibshirani1996} and \cite{Friedma
 % calibration period as the dependent
 % variable and the corresponding standardized proxies in each of the groups
 % defined in Table \ref{tab:distdate} as covariates.
-  
-% The Lasso regression penalizes the usual sum of squares with an argument
-% containing the sum of the absolute values of each coefficient in the classical
-% linear regression model, multiplied by an additional parameter (see \cite{Tibshirani1996}). Due
-% to the geometric nature of the term of penalization, the search of estimators
-% tends to assign values very close to zero to variables that have almost null
-% effects with respect to the dependent variable. In this case, the Lasso
+ The Lasso regression penalizes the usual sum of squares with an argument
+ containing the sum of the absolute values of each coefficient in the classical
+ linear regression model, multiplied by an additional parameter (see \cite{Tibshirani1996}). Due
+ to the geometric nature of the term of penalization, the search of estimators
+ tends to assign values very close to zero to variables that have almost null
+ effects with respect to the dependent variable. Clearly, this is its main advantage
+ over other methods.
+% In this case, the Lasso
 % regression was fitted using the temperature anomalies observed within the
 % calibration period as the dependent
 % variable and the corresponding standardized proxies in each of the groups
@@ -283,7 +277,7 @@ through a cross validation criteria (see \cite{Tibshirani1996} and \cite{Friedma
   others) reduce the dimension excess in non-parametric problems through the
   estimation of the linear space spanned by the coefficients of the covariables.
   In our case, we opt to use 8 slices and 4,6 and 2 EDR directions to approximate the linear
-  subspace of the 6th, 7th and 8th set of proxies. Finally we studied the association between proxies and temperatures
+  subspace of the 6th, 7th and 8th set of proxies respectively. Finally we studied the association between proxies and temperatures
   through a linear regression among the corresponding directions and the anomalies observed
   during the calibration period. 
 \item[Principal Component Regression (PCR)]
@@ -296,12 +290,14 @@ but we consider it as a benchmark for the first three methods.
 Finally, we computed the reduced proxies by predicting the anomalies in the
 reconstruction period under any of the above methods and any of the groups in
 Table \ref{tab:distdate}. The eight reduced proxies for each methodology are
-shown in Figure \ref{fig:RPs} in the Appendix.
+shown in the upper panel of Figure \ref{fig:RPs} in the Appendix. Also note that
+the obtained reduced proxies are highly correlated among methods, see lower
+panel of Figure \ref{fig:RPs}.  
 
 \subsection{Model Specification}
 \label{sec:model}
 
-Our model is based on the one presented in \cite{Barboza2014}. Now we define
+Our models are based on the one presented in \cite{Barboza2014}. Now we define
 some notation, assuming that all the variables are set at time $t$.
 \begin{itemize}
 \item $RP_t^i$: $i$-th reduced proxy at time $t$.
@@ -319,39 +315,40 @@ some notation, assuming that all the variables are set at time $t$.
   sequence $\tau$ (more details in \cite{DeBoor2001} and \cite{Ramsay2005}). We assume that the
   B-Spline basis is composed by cubic polynomials.  
 \end{itemize}
-With the above notation we can define two types of model:
+With the above notation we can define two types of model as extensions of the
+one defined in \cite{Barboza2014}, taking advantage of more reduced proxies:
 \begin{description}
-\item[State-Space model with forcings (Model 1)]
-This model is an extension of the one defined in \cite{Barboza2014}, taking
-advantage of the availability of more reduced proxies. Basically, we would be
-defining a data level (according to the hierarchical bayesian models' jargon)
-for each available $RP$:
-\begin{align}\label{eq:model1}
-  \begin{cases}
-    RP_t^i&=\alpha_0^i+\alpha_1^iT_t+\epsilon^i_t\\
-  T_t&=\beta_0+\beta_1S_t+\beta_2\tilde V_t+\beta_3\tilde C_t+\eta_t
-  \end{cases}
-\end{align}
-where $\{\alpha^i_j\}$ and $\{\beta_\ell\}$ are random parameters for
-$i=1,\ldots,N$, $j=0,1$ and $\ell=0,1,2,3$. The number of reduced proxies is
-$N\geq 1$. For simplicity, the error terms
-$\epsilon^i_t$ and $\eta_t$ are assumed to be
-independent normally-distributed random variables with finite variances
-$\{\sigma^2_{\epsilon^i}\}$ and $\sigma^2_{\eta}$ respectively. These variances
-are also considered as random and do not depend on time $t$.   
-\item[State-Space model without forcings (Model 2)]
-  We define the following model to evaluate the central hypothesis of this article, that is, the
-paleoclimate reconstruction can be performed without taking into account the
-external forcings, as long as they are replaced with deterministic
-functions that allow to describe the mean behavior of the series of anomalies.
-\begin{align}\label{eq:model2}
+\item[State-Space model without forcings (Model SSnF)]
+Basically, we would be defining a data level (according to the hierarchical bayesian models' jargon)
+  for each available $RP$:
+\begin{align}\label{eq:ssnf}
   \begin{cases}
     RP_t^i&=\alpha_0^i+\alpha_1^iT_t+\epsilon^i_t\\
   T_t&=\beta_0+\sum_{k=1}^{K(\tau)}\beta_k B_t^{k,\tau}+\eta_t
   \end{cases}
 \end{align}
+where $\{\alpha^i_j\}$ and $\{\beta_k\}$ are random parameters for
+$i=1,\ldots,N$, $j=0,1$ and $k=1,\ldots,K(\tau)$. The number of reduced proxies is
+$N\geq 1$. For simplicity, the error terms
+$\epsilon^i_t$ and $\eta_t$ are assumed to be
+independent normally-distributed random variables with finite variances
+$\{\sigma^2_{\epsilon^i}\}$ and $\sigma^2_{\eta}$ respectively. These variances
+are also considered as random and do not depend on time $t$. The main idea of
+this model is to evaluate the central hypothesis of this article, that is, the
+paleoclimate reconstruction can be performed without taking into account the
+external forcings, as long as they are replaced with deterministic
+functions that allow to describe the mean behavior of the series of anomalies.
+\item[State-Space model with forcings (Model SSwF)]
+As a second model we substitute the mean function in the second equation of
+\eqref{eq:ssnf} with a linear combination of the external forcings:    
+\begin{align}\label{eq:sswf}
+  \begin{cases}
+    RP_t^i&=\alpha_0^i+\alpha_1^iT_t+\epsilon^i_t\\
+  T_t&=\beta_0+\beta_1S_t+\beta_2\tilde V_t+\beta_3\tilde C_t+\eta_t
+  \end{cases}
+\end{align}
 \end{description}
-The models \eqref{eq:model1} and \eqref{eq:model2} are defined for
+The models \eqref{eq:ssnf} and \eqref{eq:sswf} are defined for
 $t=1,\cdots,2000$ (Common Era). It is also important to add that we focus on
 models with independent error structures since in \cite{Barboza2014} the authors
 found that the greatest impact on the predictive capacity of these hierarchical
@@ -361,7 +358,7 @@ structures are more complex.
 \section{Results.}
 \label{sec:results}
 
-The models proposed in equations \eqref{eq:model1} and \eqref{eq:model2} were
+The models proposed in equations \eqref{eq:ssnf} and \eqref{eq:sswf} were
 implemented using the R package \textbf{r-inla}\footnote{www.r-inla.org}. The
 implementation was based on the recommendations of \cite{Ruiz-Cardenas2012} and
 \cite{Muff2015} on the use of the INLA methodology in state-space models,
@@ -375,7 +372,7 @@ corresponds to the level of prior information. This is defined through the
 following hypothesis:
 \begin{itemize}
 \item $\alpha^i_j\sim N(0,3)$, $\beta_\ell \sim N(0,3)$ for $i=1,\ldots,N$, $j=0,1$ and $\ell=0,\ldots,3$
-  (Model 1) or $\ell=0,\ldots,K(\tau)$ (Model 2). The choice of the variance is
+  (Model SSwF) or $\ell=0,\ldots,K(\tau)$ (Model SSnF). The choice of the variance is
   completely arbitrary, but the main idea is to select a relatively large one.
   
 \item $\rho_i := -\log \sigma^2_{\epsilon^i}\sim \text{log-gamma}(1,10^{-20})$
@@ -392,28 +389,54 @@ IS$_\alpha$ (Interval Score at $\alpha$ level) and CRPS (Continuous Ranked
 Probability Score). These scores have been previously employed in the
 verification of point forecasts in environmental sciences for example, as well as the area
 of paleoclimatic reconstructions (see \cite{Barboza2014} and
-\cite{Scheuerer2014}). Table \ref{tab:comparison1} contains the predictive
+\cite{Scheuerer2014}). Table \ref{tab:comparisontot} contains the predictive
 measures using the observed anomalies and INLA's prediction intervals over the
-testing period 1914-2000. We compared in this case Model 1 with a single RP
-(the longest available) with respect to model 1 using the 8 available reduced
+testing period 1914-2000. We compared in this case Model SSwF with a single RP
+(the longest available) with respect to model SSwF using the 8 available reduced
 proxies, where the latter are calculated under the four dimension reduction
 methods explained above.
+
+
 \begin{table}
   \centering
-  \begin{tabular}{c|rrr}
-    \toprule
-    Number of RPs-Method& IS$_{80}$ & IS$_{95}$ & CRPS \\ 
-    \midrule
-    1 RP & 0.5249 & 0.1988 & 0.2278 \\ 
-    8 RPs-PCR & 0.1622 & 0.0542 & 0.0702 \\ 
-    8 RPs-LASSO & 0.2465 & 0.1180 & 0.0864 \\ 
-    8 RPs-SPLS & 0.1755 & 0.0586 & 0.0687 \\ 
-    8 RPs-SIR & 0.2439 & 0.1144 & 0.0891 \\ 
-    \bottomrule
+\begin{tabular}{lll|rrr}
+  \toprule
+ \textbf{Model} & $N$ & \textbf{Method} & IS$_{80}$ & IS$_{95}$ & CRPS \\ 
+  \midrule
+  SSwF & 1 & - & 0.5249 & 0.1988 & 0.2278 \\
+  \midrule
+  SSwF & 8 & PCR & 0.1622 & 0.0542 & 0.0702 \\ 
+  SSwF & 8 & LASSO & 0.2465 & 0.1180 & 0.0864 \\ 
+  SSwF & 8 & SPLS & 0.1755 & 0.0586 & 0.0687 \\ 
+  SSwF & 8 & SIR & 0.2439 & 0.1144 & 0.0891 \\
+  \midrule
+  SSnF & 8 & PCR & 0.1583 & 0.0532 & 0.0435 \\ 
+  SSnF & 8 & LASSO & 0.1881 & 0.0640 & 0.0697 \\ 
+  SSnF & 8 & SPLS & 0.1819 & 0.0611 & 0.0574 \\ 
+  SSnF & 8 & SIR & 0.1649 & 0.0550 & 0.0462 \\ 
+   \bottomrule
 \end{tabular}
-  \caption{Comparison of predictive measures in Model 1.}
-  \label{tab:comparison1}
+  \caption{Comparison of predictive measures.}
+  \label{tab:comparisontot}
 \end{table}
+
+
+% \begin{table}
+%   \centering
+%   \begin{tabular}{c|rrr}
+%     \toprule
+%     Number of RPs-Method& IS$_{80}$ & IS$_{95}$ & CRPS \\ 
+%     \midrule
+%     1 RP & 0.5249 & 0.1988 & 0.2278 \\ 
+%     8 RPs-PCR & 0.1622 & 0.0542 & 0.0702 \\ 
+%     8 RPs-LASSO & 0.2465 & 0.1180 & 0.0864 \\ 
+%     8 RPs-SPLS & 0.1755 & 0.0586 & 0.0687 \\ 
+%     8 RPs-SIR & 0.2439 & 0.1144 & 0.0891 \\ 
+%     \bottomrule
+% \end{tabular}
+%   \caption{Comparison of predictive measures in Model 1.}
+%   \label{tab:comparison1}
+% \end{table}
 It is evident that there is a substantial improvement
 in all the measures when we use all the available reduced proxies under any
 method. Also note that, among the models with external forcings, the techniques that
@@ -421,69 +444,73 @@ guarantees better results in terms of prediction are PCR and SPLS.
 
 We are also interested in verifying whether a linear combination of B-splines
 models the average behavior of the anomalies without the inclusion of external
-forcings at all. It is clear from equation \eqref{eq:model2} that one of the
+forcings at all. It is clear from equation \eqref{eq:ssnf} that one of the
 drawbacks of Model 2 is the arbitrariness of $K(\tau)$. Therefore, for each of
 the methods in section 4.1, the IS and CRPS measures were calculated for a fixed
 value of $K(\tau)$ over a grid defined in [1,50]. After this, the best $K(\tau)$
 for each method was selected using the IS and CRPS measures. These results are
-shown in Table 3. Due to the results of Table \ref{tab:comparison1}, we opt to
+shown in the last four lines in Table \ref{tab:comparisontot}. Due to the comments of the above paragraph, we opt to
 use all the reduced proxies in this case.
-\begin{table}
-  \centering
-  \begin{tabular}{c|rrr}
-  \toprule
-Method  & IS$_{80}$ & IS$_{95}$ & CRPS \\ 
-  \midrule
-PCR & 0.1583 & 0.0532 & 0.0435 \\ 
-  LASSO & 0.1881 & 0.0640 & 0.0697 \\ 
-  SPLS & 0.1819 & 0.0611 & 0.0574 \\ 
-  SIR & 0.1649 & 0.0550 & 0.0462 \\ 
-   \bottomrule
-\end{tabular}
-  \caption{Comparison of predictive measures of Model 2.}
-  \label{tab:comparison2}
-\end{table}
+% \begin{table}
+%   \centering
+%   \begin{tabular}{c|rrr}
+%   \toprule
+% Method  & IS$_{80}$ & IS$_{95}$ & CRPS \\ 
+%   \midrule
+% PCR & 0.1583 & 0.0532 & 0.0435 \\ 
+%   LASSO & 0.1881 & 0.0640 & 0.0697 \\ 
+%   SPLS & 0.1819 & 0.0611 & 0.0574 \\ 
+%   SIR & 0.1649 & 0.0550 & 0.0462 \\ 
+%    \bottomrule
+% \end{tabular}
+%   \caption{Comparison of predictive measures of Model 2.}
+%   \label{tab:comparison2}
+% \end{table}
 Note that PCR method attains a better performance in terms of all the three
 predictive measures than the
 rest of the methods, even though SIR differs very little in its corresponding
 measures. 
 
-Based on the above, we consider that Model 2's reconstructions based on PCR and SIR
+Based on the above, we consider that Model SSnF's reconstructions based on PCR and SIR
 with $K(\tau)$ = 29 and $K(\tau)$ = 24 respectively represent the best results
 especially for the CRPS measure. Due to the criticism in the PCR methodology
 (see \cite{Jolliffe1982} and \cite{Tibshirani1996}), we point out the convenience of using SIR as the best methodology for
-Model 2. However, the graphical results between both cases are very similar as
+Model SSnF. However, the graphical results between both cases are very similar as
 can be seen in the following figures. First note that the reconstructions of the
 temperature anomalies in the Common Era are shown in
-Figure \ref{fig:paleoCE1} and Figure \ref{fig:paleoCE3} in the appendix. Both
+Figure \ref{fig:paleoCE1}. Both
 show a similar behavior, in terms of trend and dispersion. The same can be said
 for a closer look of the reconstructions during the period 1900-2000 (see
-figures \ref{fig:paleo19001} and \ref{fig:paleo19003}). For comparison purposes,
-we also include the reconstructions of scenario 8 RPs-PCR in Model 1 (see
+Figure \ref{fig:paleo19001}). For comparison purposes,
+we also include the reconstructions of Model SSwF with the PCR method (see the
+upper panels of 
 figures \ref{fig:paleoCE4} and \ref{fig:paleo19004} in the appendix), where the
 main difference corresponds to the period 1-250 in terms of the variance of the
 mean function, mainly due to the sensitivity of the B-Spline basis to
-discrepancies among reduced proxies in a fixed time period.  
+discrepancies among reduced proxies in a fixed time period. Also note that the
+resulting posterior densities of the external forcings (see Figure
+\ref{fig:betas} in the Appendix) suggest that both $S_t$
+and $\tilde C_t$ are quite significant to explain the temperature anomalies.    
 \begin{figure}
   \centering
-  \includegraphics[scale=0.4]{RecCE_SIR_Splines}
+  \includegraphics[scale=0.45]{RecCE_Final}
   \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
-    prediction bands. SIR Method - Model 2.}
+    prediction bands. Model SSnF.}
   \label{fig:paleoCE1}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[scale=0.4]{Rec1900_SIR_Splines}
+  \includegraphics[scale=0.45]{Rec1900_Final}
   \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
-    prediction bands. SIR Method - Model 2.}
+    prediction bands. Model SSnF.}
   \label{fig:paleo19001}
 \end{figure}
 
 Finally, we also compare the nature of the linear function that determines the
 mean behavior of the state equation in both models. As the coefficients that
-accompany the covariates are random (External forcings for Model 1, B-Splines
-for Model 2) then it is possible to calculate confidence bands for the mean
+accompany the covariates are random (External forcings for Model SSwF, B-Splines
+for Model SSnF) then it is possible to calculate confidence bands for the mean
 function in both cases. This is illustrated in Figure \ref{fig:meanfunction}.
 \begin{figure}
   \centering
@@ -492,9 +519,28 @@ function in both cases. This is illustrated in Figure \ref{fig:meanfunction}.
   \label{fig:meanfunction}
 \end{figure}
 Note that the variance and the stability of the mean function are much greater
-in the best case of Model 2 than in the best case of Model 1. This could be an
-indicator that Model 1 has a greater bias in its mean behavior, which is a
+in the best case of Model SSnF than in the best case of Model SSwF. This could be an
+indicator that Model SSwF has a greater bias in its mean behavior, which is a
 negative aspect in the reconstruction as a whole.
+
+The computational efficiency of the INLA procedure is quite remarkable, not only
+for our case but in most of the previous works on the topic (see \cite{Rue2009},
+\cite{Blangiardo2013}, \cite{Ruiz-Cardenas2012} for a few examples). The
+computational time of an MCMC method applied on Model SSwF with 1 RP (simplest
+model) was
+aproximately 14 hours, whereas the computational time of INLA on Model SSwF with
+8 RPs (most complex model) was aproximately 11 minutes \footnote{This comparison
+was performed on an Ubuntu 16.04 server with Intel Xeon E5-2630 (8-cores,
+2.40GHz) and 64 GB of RAM.}. A graphical comparison of the reconstructions using
+both methods is shown in Figures \ref{fig:paleoCE4} and \ref{fig:paleo19004} in
+the Appendix. Note that the MCMC reconstruction is cooler than INLA's, due
+mainly to the inclusion of more information from the remaining 7 reduced
+proxies. The MCMC confidence bands along the reconstruction period are narrower,
+this together with the information observed in Figure \ref{fig:meanfunction}
+suggest that the reconstruction obtained through a MCMC technique has larger
+bias than the one obtained with INLA method.
+
+
 \section{Conclusions.}
 \label{sec:conclusions}
 
@@ -510,8 +556,8 @@ negative aspect in the reconstruction as a whole.
 \section{Additional Plots}
 \begin{figure}[H]
   \centering
- \includegraphics[scale=0.4]{RPs_type} 
-  \caption{Reduced Proxies.}
+ \includegraphics[scale=0.4]{RPs_typeandCor} 
+  \caption{Reduced Proxies and Correlation Matrices among methods.}
   \label{fig:RPs}
 \end{figure}
 
@@ -529,36 +575,45 @@ negative aspect in the reconstruction as a whole.
   \label{fig:forcings}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.35]{RecCE_PCR_Splines}
-  \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
-    prediction bands. PCR Method - Model 2.}
-  \label{fig:paleoCE3}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.35]{RecCE_PCR_Splines}
+%   \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
+%     prediction bands. PCR Method - Model 2.}
+%   \label{fig:paleoCE3}
+% \end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.4]{Rec1900_PCR_Splines}
+%   \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
+%     prediction bands. PCR Method - Model 2.}
+%   \label{fig:paleo19003}
+% \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{Rec1900_PCR_Splines}
-  \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
-    prediction bands. PCR Method - Model 2.}
-  \label{fig:paleo19003}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.35]{RecCE_PCR_Forcings}
+  \includegraphics[scale=0.35]{RecCE_Forcings}
   \caption{Paleoclimate Reconstruction in the Common Era (CE) with 95\%
-    prediction bands. 8 RPs-PCR Method - Model 1.}
+    prediction bands. Model SSwF (PCR) under two methods: INLA and MCMC.}
   \label{fig:paleoCE4}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{Rec1900_PCR_Forcings}
+  \includegraphics[scale=0.35]{Rec1900_Forcings}
   \caption{Paleoclimate Reconstruction 1900-2000 with 95\%
-    prediction bands. 8 RPs-PCR Method - Model 1.}
+    prediction bands. Model SSwF (PCR) under two methods: INLA and MCMC.}
   \label{fig:paleo19004}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{PlotBetas}
+  \caption{Posterior densities of $\beta_1$, $\beta_2$ and $\beta_3$ for Model SSwF
+  (PCR)}
+  \label{fig:betas}
 \end{figure}
 
 \end{document}
